@@ -22,7 +22,7 @@ WORKDIR /app
 # Copy Pipenv files first (for layer caching)
 COPY Pipfile Pipfile.lock ./
 
-# ✅ FIX HERE: remove --deploy
+# Install dependencies (no --deploy for CI safety)
 RUN pipenv install --system
 
 # Copy application code
