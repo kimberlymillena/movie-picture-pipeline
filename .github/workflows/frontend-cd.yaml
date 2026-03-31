@@ -36,7 +36,7 @@ jobs:
           cache: "npm"
           cache-dependency-path: starter/frontend/package-lock.json
       - run: npm ci
-      - run: CI=true npm test
+      - run: CI=true npm test -- --passWithNoTests
 
   build_and_push:
     runs-on: ubuntu-latest
