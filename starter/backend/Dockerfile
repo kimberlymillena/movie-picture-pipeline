@@ -5,7 +5,7 @@ ENV FLASK_RUN_HOST=0.0.0.0
 # Create app user
 RUN adduser -u 1000 -D app
 
-# Install system dependencies
+# Install system dependencies (✅ added postgresql-dev)
 RUN apk update && apk add \
   pcre \
   pcre-dev \
@@ -14,15 +14,16 @@ RUN apk update && apk add \
   linux-headers \
   openssl \
   libffi-dev \
+  postgresql-dev \
   && pip install pipenv
 
 # Set working directory
 WORKDIR /app
 
-# Copy Pipenv files first (for layer caching)
+# Copy Pipenv files first
 COPY Pipfile Pipfile.lock ./
 
-# Install dependencies (no --deploy)
+# Install dependencies
 RUN pipenv install --system
 
 # Copy application code
