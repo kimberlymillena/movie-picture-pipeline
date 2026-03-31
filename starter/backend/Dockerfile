@@ -5,7 +5,7 @@ ENV FLASK_RUN_HOST=0.0.0.0
 # Create app user
 RUN adduser -u 1000 -D app
 
-# Install system dependencies (✅ added postgresql-dev)
+# Install system dependencies
 RUN apk update && apk add \
   pcre \
   pcre-dev \
