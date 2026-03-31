@@ -81,3 +81,5 @@ jobs:
       - run: |
           kustomize edit set image backend=${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG}
           kustomize build | kubectl apply -f -
+
+      
