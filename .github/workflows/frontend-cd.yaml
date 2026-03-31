@@ -38,4 +38,3 @@ jobs:
     steps:
       - name: Skip frontend build and deploy
         run: echo "Skipped frontend CD AWS steps due to lab restriction"
-``
