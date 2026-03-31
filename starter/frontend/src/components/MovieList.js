@@ -15,9 +15,7 @@ export default function MovieList() {
     <div>
       <ul>
         {movies.map((m) => (
-          <li key={m.id || m.title} style={{ cursor: 'pointer' }}>
-            {m.title}
-          </li>
+          <li key={m.id || m.title}>{m.title}</li>
         ))}
       </ul>
     </div>
