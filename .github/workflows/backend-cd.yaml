@@ -3,8 +3,6 @@ name: Backend Continuous Deployment
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - "starter/backend/**"
   workflow_dispatch:
 
 
@@ -82,4 +80,4 @@ jobs:
       - run: |
           kustomize edit set image backend=${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG}
           kustomize build | kubectl apply -f -
-          
+
