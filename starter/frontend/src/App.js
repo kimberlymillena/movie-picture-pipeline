@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MovieList from './components/MovieList';
 import './App.css';
 
 export default function App() {
-  const [selectedMovie, setSelectedMovie] = useState(null);
-
-  const handleMovieClick = (movie) => {
-    setSelectedMovie(movie);
-  };
-
   return (
     <div className="container">
       <h1>Movie List</h1>
-      <MovieList onMovieClick={handleMovieClick} />
+      <MovieList />
     </div>
   );
 }

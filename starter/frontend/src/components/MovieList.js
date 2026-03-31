@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-export default function MovieList({ onMovieClick }) {
+export default function MovieList() {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
@@ -15,11 +15,7 @@ export default function MovieList({ onMovieClick }) {
     <div>
       <ul>
         {movies.map((m) => (
-          <li
-            key={m.id || m.title}
-            onClick={() => onMovieClick && onMovieClick(m)}
-            style={{ cursor: 'pointer' }}
-          >
+          <li key={m.id || m.title} style={{ cursor: 'pointer' }}>
             {m.title}
           </li>
         ))}
