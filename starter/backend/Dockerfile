@@ -35,4 +35,3 @@ CMD uwsgi --http :5000 \
   -s /var/www/app/app.sock \
   --manage-script-name \
   --mount /=app:app
-``
