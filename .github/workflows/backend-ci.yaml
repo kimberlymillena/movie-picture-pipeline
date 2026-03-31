@@ -1,10 +1,9 @@
 name: Backend Continuous Integration
 
 on:
-  main:
-    branches: ["main"]
-    paths:
-      - "starter/backend/**"
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   lint:
