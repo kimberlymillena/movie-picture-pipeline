@@ -2,9 +2,7 @@ name: Frontend Continuous Integration
 
 on:
   push:
-    branches: ["main"]
-    paths:
-      - "starter/frontend/**"
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -53,4 +51,3 @@ jobs:
             --build-arg REACT_APP_MOVIE_API_URL=${REACT_APP_MOVIE_API_URL} \
             -t mp-frontend:ci .
 
-            
