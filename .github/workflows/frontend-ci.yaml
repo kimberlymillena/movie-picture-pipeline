@@ -1,11 +1,11 @@
 name: Frontend Continuous Integration
 
+
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - "starter/frontend/**"
   workflow_dispatch:
+
 
 jobs:
   lint:
