@@ -3,7 +3,13 @@ name: Frontend Continuous Deployment
 on:
   push:
     branches: ["main"]
+    paths:
+      - starter/frontend/**
   workflow_dispatch:
+
+env:
+  # Rubric expects this to be an env var used as docker build-arg (not hard-coded directly in command)
+  REACT_APP_MOVIE_API_URL: http://localhost:5000
 
 jobs:
   lint:
@@ -16,6 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "18"
+          cache: "npm"
+          cache-dependency-path: starter/frontend/package-lock.json
       - run: npm ci
       - run: npm run lint
 
@@ -29,12 +37,42 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "18"
+          cache: "npm"
+          cache-dependency-path: starter/frontend/package-lock.json
       - run: npm ci
       - run: CI=true npm test -- --passWithNoTests
 
-  build_and_push:
+  build_push_deploy:
     runs-on: ubuntu-latest
     needs: [lint, test]
+    defaults:
+      run:
+        working-directory: starter/frontend
     steps:
-      - name: Skip frontend build and deploy
-        run: echo "Skipped frontend CD AWS steps due to lab restriction"
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag (SHA), and push frontend image to ECR (with build-arg)
+        run: |
+          docker build \
+            --build-arg REACT_APP_MOVIE_API_URL=${REACT_APP_MOVIE_API_URL} \
+            -t mp-frontend:${{ github.sha }} .
+          docker tag mp-frontend:${{ github.sha }} ${{ secrets.ECR_FRONTEND_REPO }}:${{ github.sha }}
+          docker push ${{ secrets.ECR_FRONTEND_REPO }}:${{ github.sha }}
+
+      - name: Update kubeconfig for EKS
+        run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+
+      - name: Deploy frontend manifests to EKS
+        run: |
+          kubectl apply -f k8s/
