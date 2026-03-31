@@ -1,10 +1,12 @@
 FROM public.ecr.aws/docker/library/python:3.10-alpine
+
 ENV FLASK_RUN_HOST=0.0.0.0
 
-WORKDIR /
+# Create app user
 RUN adduser -u 1000 -D app
-RUN apk update && \
-  apk add \
+
+# Install system dependencies
+RUN apk update && apk add \
   pcre \
   pcre-dev \
   build-base \
@@ -14,11 +16,23 @@ RUN apk update && \
   libffi-dev \
   && pip install pipenv
 
-RUN mkdir -p /var/www/app && mkdir /app
+# Set working directory
+WORKDIR /app
 
-COPY Pipfile* /app
-RUN cd /app && pipenv install --system --deploy
+# Copy Pipenv files first (for layer caching)
+COPY Pipfile Pipfile.lock ./
 
-COPY . /app
+# ✅ FIX HERE: remove --deploy
+RUN pipenv install --system
 
-CMD uwsgi --http :5000 --master --enable-threads -s /var/www/app/app.sock --manage-script-name --mount /=app:app
+# Copy application code
+COPY . .
+
+# Run app
+CMD uwsgi --http :5000 \
+  --master \
+  --enable-threads \
+  -s /var/www/app/app.sock \
+  --manage-script-name \
+  --mount /=app:app
+``
