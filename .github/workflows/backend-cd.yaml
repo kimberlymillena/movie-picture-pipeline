@@ -53,11 +53,9 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
+      - uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push backend image
-        run: |
+      - run: |
           docker build -t ${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG} .
           docker push ${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG}
 
@@ -80,11 +78,8 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
-      - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region us-east-1
+      - run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region us-east-1
 
-      - name: Deploy to Kubernetes
-        run: |
+      - run: |
           kustomize edit set image backend=${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG}
           kustomize build | kubectl apply -f -
-``
