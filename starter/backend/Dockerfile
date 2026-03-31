@@ -1,21 +1,14 @@
-FROM public.ecr.aws/docker/library/python:3.10-alpine
+FROM public.ecr.aws/docker/library/python:3.10-slim
 
 ENV FLASK_RUN_HOST=0.0.0.0
 
-# Create app user
-RUN adduser -u 1000 -D app
-
 # Install system dependencies
-RUN apk update && apk add \
-  pcre \
-  pcre-dev \
-  build-base \
+RUN apt-get update && apt-get install -y \
   gcc \
-  linux-headers \
-  openssl \
-  libffi-dev \
-  postgresql-dev \
-  && pip install pipenv
+  libpq-dev \
+  build-essential \
+  && pip install pipenv \
+  && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -30,9 +23,4 @@ RUN pipenv install --system
 COPY . .
 
 # Run app
-CMD uwsgi --http :5000 \
-  --master \
-  --enable-threads \
-  -s /var/www/app/app.sock \
-  --manage-script-name \
-  --mount /=app:app
+CMD ["uwsgi", "--http", ":5000", "--master", "--enable-threads", "-s", "/var/www/app/app.sock", "--manage-script-name", "--mount", "/=app:app"]
