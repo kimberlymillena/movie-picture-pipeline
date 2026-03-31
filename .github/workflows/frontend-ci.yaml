@@ -1,7 +1,7 @@
 name: Frontend Continuous Integration
 
 on:
-  pull_request:
+  push:
     branches: [ "main" ]
     paths:
       - "starter/frontend/**"
