@@ -14,22 +14,13 @@ jobs:
       run:
         working-directory: starter/backend
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-
-      - name: Install pipenv
-        run: pip install pipenv
-
-      - name: Install deps
-        run: pipenv install
-
-      - name: Lint
-        run: pipenv run lint
+      - run: pip install pipenv
+      - run: pipenv install
+      - run: pipenv run lint
 
   test:
     runs-on: ubuntu-latest
@@ -37,22 +28,13 @@ jobs:
       run:
         working-directory: starter/backend
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-
-      - name: Install pipenv
-        run: pip install pipenv
-
-      - name: Install deps
-        run: pipenv install
-
-      - name: Test
-        run: pipenv run test
+      - run: pip install pipenv
+      - run: pipenv install
+      - run: pipenv run test
 
   build:
     runs-on: ubuntu-latest
@@ -61,9 +43,5 @@ jobs:
       run:
         working-directory: starter/backend
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: |
-          docker build -t mp-backend:ci .
+      - uses: actions/checkout@v4
+      - run: docker build -t mp-backend:ci .

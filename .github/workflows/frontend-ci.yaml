@@ -14,23 +14,14 @@ jobs:
       run:
         working-directory: starter/frontend
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          # ✅ If you have .nvmrc, switch to node-version-file:
-          # node-version-file: "starter/frontend/.nvmrc"
           node-version: "18"
           cache: "npm"
           cache-dependency-path: starter/frontend/package-lock.json
-
-      - name: Install deps
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
+      - run: npm ci
+      - run: npm run lint
 
   test:
     runs-on: ubuntu-latest
@@ -38,21 +29,14 @@ jobs:
       run:
         working-directory: starter/frontend
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: "npm"
           cache-dependency-path: starter/frontend/package-lock.json
-
-      - name: Install deps
-        run: npm ci
-
-      - name: Test
-        run: CI=true npm test
+      - run: npm ci
+      - run: CI=true npm test
 
   build:
     runs-on: ubuntu-latest
@@ -61,14 +45,10 @@ jobs:
       run:
         working-directory: starter/frontend
     env:
-      # ✅ required by rubric note: store URL in an env var, don’t hardcode in the command
       REACT_APP_MOVIE_API_URL: http://localhost:5000
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: |
+      - uses: actions/checkout@v4
+      - run: |
           docker build \
             --build-arg REACT_APP_MOVIE_API_URL=${REACT_APP_MOVIE_API_URL} \
             -t mp-frontend:ci .

@@ -47,18 +47,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure AWS creds
-        uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v2
+      - uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build & Push (tag = git sha)
-        run: |
+      - run: |
           docker build -t ${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG} .
           docker push ${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG}
 
@@ -73,18 +70,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure AWS creds
-        uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Update kubeconfig (EKS)
-        run: |
-          aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+      - run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
-      - name: Set image tag (git sha) and apply manifests
-        run: |
+      - run: |
           kustomize edit set image backend=${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG}
           kustomize build | kubectl apply -f -
