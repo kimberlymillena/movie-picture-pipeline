@@ -48,9 +48,9 @@ jobs:
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ASIA4WBAERBGKPHSN66L
+          aws-secret-access-key: vL9U9CC4Fv+vqVpBae6wJj0andCFWaQM0Z2PuWmC
+          aws-region: us-east-1
 
       - uses: aws-actions/amazon-ecr-login@v2
 
@@ -80,4 +80,5 @@ jobs:
       - run: |
           kustomize edit set image backend=${{ secrets.ECR_BACKEND_REPO }}:${IMAGE_TAG}
           kustomize build | kubectl apply -f -
+
 
